@@ -1,5 +1,6 @@
 .idea
 out
+dist/
 
 ### macOS
 # General
