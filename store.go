@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -25,10 +26,35 @@ func (s *ZeaburDnsStore) Get(key string) (string, bool) {
 	return value, exists
 }
 
-// Set updates the entire DNS map
+// Set updates the entire DNS map and prints the changes
 func (s *ZeaburDnsStore) Set(newMap map[string]string) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
+
+	const prefix = "[zeabur-dns]"
+
+	// Compare old and new maps to print changes
+	// Print removals for keys that are in old map but not in new map
+	for key, oldValue := range s.dnsMap {
+		if newValue, exists := newMap[key]; !exists {
+			// Key was removed
+			fmt.Printf("%s - %s \t -> \t %s\n", prefix, key, oldValue)
+		} else if oldValue != newValue {
+			// Key exists but value changed - print removal first
+			fmt.Printf("%s - %s \t -> \t %s\n", prefix, key, oldValue)
+			fmt.Printf("%s + %s \t -> \t %s\n", prefix, key, newValue)
+		}
+	}
+
+	// Print additions for keys that are in new map but not in old map
+	for key, newValue := range newMap {
+		if _, exists := s.dnsMap[key]; !exists {
+			// New key was added
+			fmt.Printf("%s + %s \t -> \t %s\n", prefix, key, newValue)
+		}
+	}
+
+	// Update the map
 	s.dnsMap = newMap
 }
 
