@@ -38,11 +38,11 @@ func (s *ZeaburDnsStore) Set(newMap map[string]string) {
 	for key, oldValue := range s.dnsMap {
 		if newValue, exists := newMap[key]; !exists {
 			// Key was removed
-			fmt.Printf("%s - %s \t -> \t %s\n", prefix, key, oldValue)
+			fmt.Printf("%s - %-20s -> %s\n", prefix, key, oldValue)
 		} else if oldValue != newValue {
 			// Key exists but value changed - print removal first
-			fmt.Printf("%s - %s \t -> \t %s\n", prefix, key, oldValue)
-			fmt.Printf("%s + %s \t -> \t %s\n", prefix, key, newValue)
+			fmt.Printf("%s - %-20s -> %s\n", prefix, key, oldValue)
+			fmt.Printf("%s + %-20s -> %s\n", prefix, key, newValue)
 		}
 	}
 
@@ -50,7 +50,7 @@ func (s *ZeaburDnsStore) Set(newMap map[string]string) {
 	for key, newValue := range newMap {
 		if _, exists := s.dnsMap[key]; !exists {
 			// New key was added
-			fmt.Printf("%s + %s \t -> \t %s\n", prefix, key, newValue)
+			fmt.Printf("%s + %-20s -> %s\n", prefix, key, newValue)
 		}
 	}
 

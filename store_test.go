@@ -34,8 +34,8 @@ func TestZeaburDnsStore_Set(t *testing.T) {
 
 	// Verify output contains additions
 	expectedAdditions := []string{
-		"+ service1.example.com \t -> \t 10.0.0.1",
-		"+ service2.example.com \t -> \t 10.0.0.2",
+		"[zeabur-dns] + service1.example.com -> 10.0.0.1",
+		"[zeabur-dns] + service2.example.com -> 10.0.0.2",
 	}
 	for _, expected := range expectedAdditions {
 		if !contains(output1, expected) {
@@ -66,10 +66,10 @@ func TestZeaburDnsStore_Set(t *testing.T) {
 
 	// Verify output contains modifications and removals
 	expectedChanges := []string{
-		"- service1.example.com \t -> \t 10.0.0.1", // Old value removed
-		"+ service1.example.com \t -> \t 10.0.0.3", // New value added
-		"- service2.example.com \t -> \t 10.0.0.2", // Entry removed
-		"+ service3.example.com \t -> \t 10.0.0.4", // New entry added
+		"[zeabur-dns] - service1.example.com -> 10.0.0.1", // Old value removed
+		"[zeabur-dns] + service1.example.com -> 10.0.0.3", // New value added
+		"[zeabur-dns] - service2.example.com -> 10.0.0.2", // Entry removed
+		"[zeabur-dns] + service3.example.com -> 10.0.0.4", // New entry added
 	}
 	for _, expected := range expectedChanges {
 		if !contains(output2, expected) {
