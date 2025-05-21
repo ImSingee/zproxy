@@ -43,10 +43,7 @@ func (d *CustomDialer) Dial(network, address string) (net.Conn, error) {
 		return nil, err
 	}
 
-	// Check if it's an IP address
-	if net.ParseIP(host) != nil {
-		return nil, fmt.Errorf("IP addresses are not allowed: %s", host)
-	}
+	host = strings.ToLower(host)
 
 	// Check if the domain ends with the specified suffix
 	suffix := "." + d.inDomainSuffix
