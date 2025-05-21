@@ -109,12 +109,14 @@ Additionally, you can also use `PORT` environment variable to configure listenin
 ZProxy modifies domain names according to the following rules:
 
 1. The proxy only accepts domain names (IP addresses are rejected)
-2. The domain must end with the specified domain suffix (e.g., `cluster.local`)
+2. The domain must end with the specified domain suffix (e.g., `cluster.local`, configured with `--in-domain-suffix`)
 3. The domain suffix is replaced with the specified cluster domain
 
 For example, with default settings:
-- `service.namespace.cluster.local` → `service.namespace.cluster.local` (no change if suffixes are the same)
-- `service.namespace.custom.suffix` → `service.namespace.cluster.local` (if domain suffix is set to `custom.suffix`)
+- `service.namespace.svc.cluster.local` → `service.namespace.svc.cluster.local` (no change if suffixes are the same)
+
+And if you set a custom suffix (e.g. `custom.suffix`)
+- `service.namespace.svc.custom.suffix` → `service.namespace.svc.cluster.local` 
 
 ### Zeabur DNS Mapping
 
@@ -124,12 +126,12 @@ ZProxy now supports special handling for Zeabur services. When the Zeabur API ke
 2. Allow access to Zeabur services using a special domain format
 3. Periodically update the service mappings based on the configured interval
 
-For domains with the format `{service-name}.zeabur.{domain-suffix}`, ZProxy will:
+For domains with the format `{service-name}.{project-name}.zeabur.{domain-suffix}`, ZProxy will:
 1. Look up the service name in the Zeabur DNS store
-2. Map it to the corresponding Kubernetes service address (`{value}.svc.{cluster-domain}`)
+2. Map it to the corresponding Kubernetes service address
 
 For example:
-- `my-service.zeabur.cluster.local` → `my-service-abc123.svc.cluster.local`
+- `my-service.my-prject.zeabur.cluster.local` → the `my-service` service in `my-project` project
 
 To enable this feature, you need to provide:
 - `ZEABUR_API_KEY`: Your Zeabur API key
