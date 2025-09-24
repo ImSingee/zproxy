@@ -1,0 +1,22 @@
+# VCS data and CI configuration
+.git
+.gitignore
+.github/
+
+# Editor and IDE settings
+.vscode/
+.idea/
+
+# Local environment files
+.env
+.envrc
+
+# Build artifacts
+bin/
+dist/
+out/
+*.log
+zproxy
+
+# OS metadata
+.DS_Store
