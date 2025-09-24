@@ -9,19 +9,16 @@ ZProxy is a SOCKS5 proxy designed to help you access internal services deployed 
 
 ## Installation
 
-You can go to the [Releases](https://github.com/ImSingee/zproxy/releases) page to download the latest binary.
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZL5OKK?referralCode=ImSingee)
+
 
 ### Docker
-
-You can also use the Docker image:
 
 ```bash
 docker pull ghcr.io/imsingee/zproxy:latest
 ```
 
 ### Kubernetes
-
-You can deploy this to your Kubernetes cluster:
 
 ```yaml
 apiVersion: apps/v1

@@ -1,0 +1,121 @@
+apiVersion: zeabur.com/v1
+kind: Template
+metadata:
+  name: ZProxy
+spec:
+  description: "ZProxy is a SOCKS5 proxy that helps you access services deployed on Zeabur Dedicated Server without exposing them to the public Internet."
+  tags:
+    - Tool
+    - Networking
+    - Proxy
+  variables:
+    - key: ZEABUR_API_KEY
+      type: STRING
+      name: "Zeabur API Key"
+      description: "Get from https://zeabur.com/account/api-keys"
+    - key: ZEABUR_SERVER_ID
+      type: STRING
+      name: "Zeabur Server ID"
+      description: "Visit https://zeabur.com/servers, choose your server, and copy the id from the bottom-left corner"
+  readme: |-
+    # ZProxy
+
+    [ZProxy](https://github.com/ImSingee/zproxy) is a SOCKS5 proxy that helps you access services deployed on **Zeabur Dedicated Server** without exposing them to the public Internet.  
+
+    ## Key environment variables
+    - `AUTH_USERNAME`, `AUTH_PASSWORD`: SOCKS5 authentication  
+      - Default username: `zeabur`  
+      - Default password: generated randomly during deployment
+    - `ZEABUR_API_KEY`: Zeabur API Key
+    - `ZEABUR_SERVER_ID`: Zeabur Dedicated Server ID
+    - `ZEABUR_UPDATE_INTERVAL`: Mapping refresh interval (default `5m`)
+
+    ## Usage examples
+    Access internal services via:  
+      `{service-name}.{project-name}.zeabur.cluster.local`  
+      **Note:** Domains must be **lowercase**.
+
+    - Example 1 — LobeChat with a `logto` service (admin panel on port `3002`):  
+      Instead of exposing the admin panel to the Internet, configure the proxy and open:  
+      `logto.lobechat.zeabur.cluster.local:3002`
+
+    - Example 2 — a `postgres` database inside the LobeChat project:  
+      With the proxy configured, connect locally via:  
+      `psql -h postgres.lobechat.zeabur.cluster.local`
+
+  services:
+    - name: zproxy
+      template: PREBUILT
+      spec:
+        source:
+          image: ghcr.io/imsingee/zproxy:latest
+        ports:
+          - id: socks5
+            port: 1080
+            type: TCP
+        env:
+          # Auth defaults
+          AUTH_USERNAME:
+            default: zeabur
+          AUTH_PASSWORD:
+            default: ${PASSWORD}
+
+          # Mapping interval (variables ZEABUR_API_KEY / ZEABUR_SERVER_ID are auto-injected)
+          ZEABUR_UPDATE_INTERVAL:
+            default: 5m
+
+        instructions:
+          - type: TEXT
+            title: Proxy String
+            content: socks5h://${AUTH_USERNAME}:${AUTH_PASSWORD}@${PORT_FORWARDED_HOSTNAME}:${SOCKS5_PORT_FORWARDED_PORT}
+          - type: TEXT
+            title: SOCKS5 Addr
+            content: ${PORT_FORWARDED_HOSTNAME}:${SOCKS5_PORT_FORWARDED_PORT}
+            category: Hostname & Port
+          - type: PASSWORD
+            title: Auth Username
+            content: ${AUTH_USERNAME}
+            category: Credentials
+          - type: PASSWORD
+            title: Auth Password
+            content: ${AUTH_PASSWORD}
+            category: Credentials
+
+localization:
+  zh-CN:
+    description: "ZProxy 是一个 SOCKS5 代理，帮你访问部署在 Zeabur Dedicated Server 上的服务（无需暴露到公网）。"
+    variables:
+      - key: ZEABUR_API_KEY
+        type: STRING
+        name: "Zeabur API Key"
+        description: "访问 https://zeabur.com/account/api-keys 生成"
+      - key: ZEABUR_SERVER_ID
+        type: STRING
+        name: "Zeabur 服务器 ID"
+        description: "访问 https://zeabur.com/servers，并选择你要部署本服务的服务器，然后从左下角复制"
+    readme: |-
+      # ZProxy
+
+      [ZProxy](https://github.com/ImSingee/zproxy) 是一个 SOCKS5 代理，帮助你在不将服务暴露到公网的情况下访问部署在 **Zeabur Dedicated Server** 上的服务。  
+      配置 `ZEABUR_API_KEY` 与 `ZEABUR_SERVER_ID` 可启用 Zeabur 服务映射与定期更新。
+
+      ## 关键环境变量
+      - `AUTH_USERNAME`、`AUTH_PASSWORD`：SOCKS5 认证  
+        - 默认用户名：`zeabur`  
+        - 默认密码：部署时随机生成
+      - `ZEABUR_API_KEY`：Zeabur API Key
+      - `ZEABUR_SERVER_ID`：所部署到的 Zeabur Dedicated Server 的 Server ID
+      - `ZEABUR_UPDATE_INTERVAL`：映射刷新间隔（默认 `5m`）
+
+      ## 使用示例
+      通过以下域名直接访问内部服务：  
+        `{service-name}.{project-name}.zeabur.cluster.local`  
+        **注意：域名必须为小写**。
+
+      - 示例 1 —— LobeChat 项目中的 `logto` 服务（管理面板端口 `3002`）：  
+        现在无需暴露到公网，配置好代理后直接访问：  
+        `logto.lobechat.zeabur.cluster.local:3002`
+
+      - 示例 2 —— LobeChat 项目中的 `postgres` 数据库：  
+        配置好代理后，本地即可：  
+        `psql -h postgres.lobechat.zeabur.cluster.local`
