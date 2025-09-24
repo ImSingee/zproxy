@@ -3,7 +3,6 @@ name: Build
 on:
   push:
   pull_request:
-    branches: [ main ]
 
 permissions:
   contents: read
@@ -39,6 +38,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
             type=sha,format=short
+            type=ref,event=tag
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
